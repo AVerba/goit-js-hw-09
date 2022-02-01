@@ -11,6 +11,7 @@ const ref={
     secondsEl: document.querySelector('[data-seconds]'),
 }
 let chooseDate=null;
+let timerId=null;
 
 const updateTime=({ days, hours, minutes, seconds })=> {
   ref.daysEl.textContent=`${days}`;
@@ -22,9 +23,13 @@ const updateTime=({ days, hours, minutes, seconds })=> {
 ref.startTimerBtn.addEventListener('click',()=>{
     // Notiflix.Notify.failure('Qui timide rogat docet negare');    
     
-    setInterval(() => {
-      let deltaTime= chooseDate-Date.now(),
-      tempDate=convertMs(deltaTime);
+    timerId=setInterval(() => {
+      const deltaTime= chooseDate-Date.now();
+      if(deltaTime<=1000){
+        console.log(`${deltaTime} меньше 1 секунды - Стоп!`)
+        clearInterval(timerId);
+      }
+      const tempDate=convertMs(deltaTime);
 
 
       updateTime(tempDate);
