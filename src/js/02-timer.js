@@ -11,9 +11,6 @@ const ref={
     secondsEl: document.querySelector('[data-seconds]'),
 }
 let chooseDate=null;
-ref.startTimerBtn.addEventListener('click',()=>{
-    Notiflix.Notify.failure('Qui timide rogat docet negare');
-})
 
 const updateTime=({ days, hours, minutes, seconds })=> {
   ref.daysEl.textContent=`${days}`;
@@ -21,6 +18,22 @@ const updateTime=({ days, hours, minutes, seconds })=> {
   ref.minutesEl.textContent=`${minutes}`;
   ref.secondsEl.textContent=`${seconds}`;
 }
+
+ref.startTimerBtn.addEventListener('click',()=>{
+    // Notiflix.Notify.failure('Qui timide rogat docet negare');    
+    
+    setInterval(() => {
+      let deltaTime= chooseDate-Date.now(),
+      tempDate=convertMs(deltaTime);
+
+
+      updateTime(tempDate);
+      console.log(chooseDate-Date.now())
+      
+    }, 1000,chooseDate);
+})
+
+
 
 const options = {
     enableTime: true,
@@ -33,7 +46,7 @@ const options = {
         return;
       }
       const time=convertMs(selectedDates[0]-options.defaultDate);
-      chooseDate=selectedDates[0]-options.defaultDate;
+      chooseDate=selectedDates[0];
     
       // const {days, hours, minutes, seconds}=time;
       updateTime(time);
