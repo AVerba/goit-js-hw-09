@@ -2,7 +2,25 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import Notiflix from 'notiflix';
 
+const ref={
+    timerInput:document.querySelector('#datetime-picker'),
+    startTimerBtn: document.querySelector('[data-start]'),
+    daysEl: document.querySelector('[data-days]'),
+    hoursEl: document.querySelector('[data-hours]'),
+    minutesEl: document.querySelector('[data-minutes]'),
+    secondsEl: document.querySelector('[data-seconds]'),
+}
+let chooseDate=null;
+ref.startTimerBtn.addEventListener('click',()=>{
+    Notiflix.Notify.failure('Qui timide rogat docet negare');
+})
 
+const updateTime=({ days, hours, minutes, seconds })=> {
+  ref.daysEl.textContent=`${days}`;
+  ref.hoursEl.textContent=`${hours}`;
+  ref.minutesEl.textContent=`${minutes}`;
+  ref.secondsEl.textContent=`${seconds}`;
+}
 
 const options = {
     enableTime: true,
@@ -10,9 +28,22 @@ const options = {
     defaultDate: new Date(),
     minuteIncrement: 1,
     onClose(selectedDates) {
-      console.log(selectedDates[0]);
+      if(selectedDates[0]<=options.defaultDate){
+        Notiflix.Notify.failure('Qui timide rogat docet negare')
+        return;
+      }
+      const time=convertMs(selectedDates[0]-options.defaultDate);
+      chooseDate=selectedDates[0]-options.defaultDate;
+    
+      // const {days, hours, minutes, seconds}=time;
+      updateTime(time);
+
+      
+
     },
   };
+
+  flatpickr (ref.timerInput, options) 
 
   function convertMs(ms) {
     // Number of milliseconds per unit of time
@@ -32,7 +63,3 @@ const options = {
   
     return { days, hours, minutes, seconds };
   }
-  
-  console.log(convertMs(2000)); // {days: 0, hours: 0, minutes: 0, seconds: 2}
-  console.log(convertMs(140000)); // {days: 0, hours: 0, minutes: 2, seconds: 20}
-  console.log(convertMs(24140000)); // {days: 0, hours: 6 minutes: 42, seconds: 20}
