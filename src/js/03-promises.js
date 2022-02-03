@@ -2,29 +2,45 @@
 import Notiflix from 'notiflix';
 const dataPromiseForm =document.querySelector('.form');
 
-
-function createPromise(position, delay) {
+const createPromise=(position, delay)=>{
   const shouldResolve = Math.random() > 0.3;
-  return promise= new Promise((res, reject)=>{
+// position - номер Промиса, Дэлэй - задержка=delay+step
+  return new Promise((resolve, reject)=>{
     setTimeout(()=>{
-      if (shouldResolve) {
-        // Fulfill
-      } else {
-        // Reject
+      if(shouldResolve){        
+        resolve({position, delay});
       }
-    },delay)
-  })
- 
+      else{
+        reject({position, delay});
+      }
+    },delay);    
+  });
 }
 
-const createpromiseHandler=(e)=>{
+const createPromiseHandler=(e)=>{
   e.preventDefault();
+  const { elements } = e.currentTarget;
+  let delay=+elements.delay.value,
+      step=+elements.step.value,
+      amount=+elements.amount.value;
 
-  const { elements } = e.currentTarget,
-        { delay, step, amount } = elements;
-        
-  console.log(+delay.value, +step.value, +amount.value);
+        // { delay, step, amount } = elements;
+  // position - номер Промиса, Дэлэй - задержка=delay+step 
+
+  for(let i=0;i<+amount;i+=1){
+
+    
+    createPromise(i,delay)
+    .then(({ position, delay })=>{
+      Notiflix.Notify.success(`✅ Fulfilled promise ${position} in ${delay} ms`);
+    })
+    .catch(({ position, delay })=>{
+      Notiflix.Notify.failure(`❌ Rejected promise ${position} in ${delay} ms`);
+    });
+    delay+=step;
+  }
+
 }
 
+dataPromiseForm.addEventListener('submit', createPromiseHandler);
 
-dataPromiseForm.addEventListener('submit', createpromiseHandler)

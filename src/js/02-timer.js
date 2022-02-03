@@ -60,7 +60,7 @@ const options = {
       }
       const time=convertMs(selectedDates[0]-options.defaultDate);
       chooseDate=selectedDates[0];
-      updateTime(time);  
+      //updateTime(time);  
     },
   }; 
 
