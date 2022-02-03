@@ -2,6 +2,7 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import Notiflix from 'notiflix';
 
+
 const ref={
     timerInput:document.querySelector('#datetime-picker'),
     startTimerBtn: document.querySelector('[data-start]'),
@@ -12,6 +13,7 @@ const ref={
 }
 let chooseDate=null;
 let timerId=null;
+ref.startTimerBtn.setAttribute('disabled', 'disabled');
 
 const convertMs=(ms)=>{
 
@@ -34,7 +36,10 @@ const updateTime=({ days, hours, minutes, seconds })=> {
   ref.minutesEl.textContent=`${minutes}`;
   ref.secondsEl.textContent=`${seconds}`;
 }
+
+
 const startTimerHandler=()=>{
+
   timerId=setInterval(() => {
     const deltaTime= chooseDate-Date.now();
     if(deltaTime<=1000){
@@ -46,6 +51,9 @@ const startTimerHandler=()=>{
     console.log(chooseDate-Date.now())
     
   }, 1000,chooseDate);
+  ref.startTimerBtn.classList.remove('green-btn')
+  ref.startTimerBtn.classList.add('red-btn')
+  ref.startTimerBtn.textContent="Stop"
 }
 
 const options = {
@@ -60,6 +68,9 @@ const options = {
       }
       const time=convertMs(selectedDates[0]-options.defaultDate);
       chooseDate=selectedDates[0];
+      ref.startTimerBtn.removeAttribute('disabled');
+      ref.startTimerBtn.classList.remove('disable-btn')
+      ref.startTimerBtn.classList.add('green-btn')
       //updateTime(time);  
     },
   }; 

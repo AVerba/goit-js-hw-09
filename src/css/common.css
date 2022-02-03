@@ -40,3 +40,33 @@ img {
   text-align: center;
   margin-right: 15px;
 }
+
+.timer-btn {
+  border: none;
+  margin-left: 15px;
+
+  color: white;
+  padding: 15px 50px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 15px;
+}
+.disable-btn {
+  background-color: #8bb18c;
+}
+.green-btn {
+  background-color: #4caf50;
+}
+
+.red-btn {
+  background-color: #dd1111;
+}
+.gray-btn {
+  background-color: #8f8f8f;
+}
+.controls input {
+  width: 311px;
+  font-size: 20px;
+}
