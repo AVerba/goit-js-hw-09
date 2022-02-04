@@ -4,7 +4,25 @@ import Notiflix from 'notiflix';
 import { checkBtnStatus } from './checkBtnStatus';
 import {convertMs} from './convertMs';
  
-
+const options = {
+  enableTime: true,
+  time_24hr: true,
+  defaultDate: new Date(),
+  minuteIncrement: 1,
+  onClose(selectedDates) {
+    if(selectedDates[0]<=options.defaultDate){
+      Notiflix.Notify.failure('Please choose a date in the future')
+      return;
+    }
+    const time=convertMs(selectedDates[0]-options.defaultDate);
+    chooseDate=selectedDates[0];
+    ref.startTimerBtn.removeAttribute('disabled');
+    ref.startTimerBtn.setAttribute('status','start')
+    ref.startTimerBtn.classList.remove('disable-btn')
+    ref.startTimerBtn.classList.add('green-btn')
+    // updateTime(time);  
+  },
+}; 
 
 const ref={
     timerInput:document.querySelector('#datetime-picker'),
@@ -55,29 +73,13 @@ const startTimerHandler=(e)=>{
       checkBtnStatus(e.target);
       const date={ days:0, hours:0, minutes:0,seconds:0, };
       updateTime(date);
+      options.defaultDate=new Date();
+      flatpickr (ref.timerInput, options) 
     break;      
   }   
 }
 
-const options = {
-    enableTime: true,
-    time_24hr: true,
-    defaultDate: new Date(),
-    minuteIncrement: 1,
-    onClose(selectedDates) {
-      if(selectedDates[0]<=options.defaultDate){
-        Notiflix.Notify.failure('Please choose a date in the future')
-        return;
-      }
-      const time=convertMs(selectedDates[0]-options.defaultDate);
-      chooseDate=selectedDates[0];
-      ref.startTimerBtn.removeAttribute('disabled');
-      ref.startTimerBtn.setAttribute('status','start')
-      ref.startTimerBtn.classList.remove('disable-btn')
-      ref.startTimerBtn.classList.add('green-btn')
-      // updateTime(time);  
-    },
-  }; 
+
 
 
 
