@@ -1,6 +1,9 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import Notiflix from 'notiflix';
+import { checkBtnStatus } from './checkBtnStatus';
+import {convertMs} from './convertMs';
+ 
 
 
 const ref={
@@ -15,20 +18,6 @@ let chooseDate=null;
 let timerId=null;
 ref.startTimerBtn.setAttribute('disabled', 'disabled');
 
-const convertMs=(ms)=>{
-
-  const second = 1000;
-  const minute = second * 60;
-  const hour = minute * 60;
-  const day = hour * 24;
-  // Remaining days
-  const days = Math.floor(ms / day);
-  const hours = Math.floor((ms % day) / hour);
-  const minutes = Math.floor(((ms % day) % hour) / minute);
-  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
-
-  return { days, hours, minutes, seconds };
-}
 
 const updateTime=({ days, hours, minutes, seconds })=> {
   ref.daysEl.textContent=`${days}`;
@@ -37,23 +26,37 @@ const updateTime=({ days, hours, minutes, seconds })=> {
   ref.secondsEl.textContent=`${seconds}`;
 }
 
-
-const startTimerHandler=()=>{
-
-  timerId=setInterval(() => {
-    const deltaTime= chooseDate-Date.now();
-    if(deltaTime<=1000){
-      console.log(`${deltaTime} меньше 1 секунды - Стоп!`)
+const startTimerHandler=(e)=>{
+  
+  const statusBtn=e.target.getAttribute('status');
+  console.log(statusBtn);
+  switch(statusBtn){
+    case 'start':
+      checkBtnStatus(e.target);
+      timerId=setInterval(() => {
+        const deltaTime= chooseDate-Date.now();
+        if(deltaTime<=1000){
+          console.log(`${deltaTime} меньше 1 секунды - Стоп!`)
+          ref.startTimerBtn.setAttribute('status','reset')
+          checkBtnStatus( ref.startTimerBtn);
+          clearInterval(timerId);
+         
+          
+        }
+        const tempDate=convertMs(deltaTime);
+        updateTime(tempDate);      
+      }, 1000,chooseDate);
+    break;
+    case 'stop':
+      checkBtnStatus(e.target);
       clearInterval(timerId);
-    }
-    const tempDate=convertMs(deltaTime);
-    updateTime(tempDate);
-    console.log(chooseDate-Date.now())
-    
-  }, 1000,chooseDate);
-  ref.startTimerBtn.classList.remove('green-btn')
-  ref.startTimerBtn.classList.add('red-btn')
-  ref.startTimerBtn.textContent="Stop"
+    break;
+    case 'reset':
+      checkBtnStatus(e.target);
+      const date={ days:0, hours:0, minutes:0,seconds:0, };
+      updateTime(date);
+    break;      
+  }   
 }
 
 const options = {
@@ -69,9 +72,10 @@ const options = {
       const time=convertMs(selectedDates[0]-options.defaultDate);
       chooseDate=selectedDates[0];
       ref.startTimerBtn.removeAttribute('disabled');
+      ref.startTimerBtn.setAttribute('status','start')
       ref.startTimerBtn.classList.remove('disable-btn')
       ref.startTimerBtn.classList.add('green-btn')
-      //updateTime(time);  
+      // updateTime(time);  
     },
   }; 
 
